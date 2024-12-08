@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Text Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        header {
+            background-color: #4CAF50;
+            width: 100%;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        main {
+            margin-top: 60px; /* Ensure space for the fixed header */
+            flex: 1;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            overflow-y: auto;
+        }
+        img {
+            max-width: 80%;
+            height: auto;
+            margin-top: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="file"], input[type="submit"] {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        input[type="file"]:hover, input[type="submit"]:hover {
+            background-color: #f0f0f0;
+        }
+        h2 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Image to Text Converter</h1>
+    </header>
+    <main>
+        <h2>Upload an Image to Convert to Text</h2>
+        <form action="/" method="post" enctype="multipart/form-data" id="uploadForm">
+            <input type="file" name="file" id="fileInput" required>
+            <input type="submit" value="Upload">
+        </form>
+        <img id="preview" src="" alt="Image preview" style="display:none;">
+        {% if prediction %}
+            <h2>Predicted Label: {{ prediction }}</h2>
+        {% endif %}
+    </main>
+    <script>
+        // JavaScript to handle image preview
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const preview = document.getElementById('preview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function() {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+                preview.scrollIntoView({ behavior: "smooth" });
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        });
+
+        // JavaScript to handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files.length) {
+                alert('Please select a file to upload.');
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
